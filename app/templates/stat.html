@@ -1,0 +1,24 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" media="screen" href="static/css/bootstrap.min.css">
+<link rel="stylesheet" href="static/css/bootstrap-theme.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+{% import 'macros.html' as macros %}
+{% block content %}
+
+<div class="container-fluid">
+    <h2>Comments on Flask!!!</h2>
+    <table class="table table-hover" id="comments">
+        {% set headers = [] %}
+        {% for k, v in comment_statistics[0].items() %}
+            {{ headers.append( k ) or ''}}
+        {% endfor %}
+
+        {{ macros.render_table_header(headers, first_checkbox=False) }}
+        {% if header_only == False %}
+            {{ macros.render_table_body(comment_statistics, first_checkbox=False) }}
+        {% endif %}
+    </table>
+</div>
+
+{% endblock content %}

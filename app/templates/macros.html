@@ -1,0 +1,85 @@
+{% macro render_field(field, label_visible=true) -%}
+
+    <div class="form-group {% if field.errors %}has-error{% endif %} {{ kwargs.pop('class_', '') }}">
+        {% if (field.type != 'HiddenField' and field.type !='CSRFTokenField') and label_visible %}
+            <label for="{{ field.id }}" class="control-label">{{ field.label }}</label>
+        {% endif %}
+        {{ field(class_='form-control', **kwargs) }}
+        {% if field.errors %}
+            {% for e in field.errors %}
+                <p class="help-block">{{ e }}</p>
+            {% endfor %}
+        {% endif %}
+    </div>
+{%- endmacro %}
+
+
+{% macro render_form(form, action_url='', action_text='Submit', class_='', btn_class='btn btn-success') -%}
+
+    <form id="demo-form" method="POST" action="{{ action_url }}" role="form" class="{{ class_ }}">
+        {{ form.hidden_tag() if form.hidden_tag }}
+        {% if caller %}
+            {{ caller() }}
+        {% else %}
+            {% for f in form %}
+                {{ render_field(f) }}
+            {% endfor %}
+        {% endif %}
+        <button type="submit" class="{{ btn_class }}">{{ action_text }} </button>
+    </form>
+
+{%- endmacro %}
+
+
+{% macro render_alert(level) -%}
+
+    {% with messages = get_flashed_messages(category_filter=[level]) %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {{ level }}" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+{%- endmacro %}
+
+{% macro render_table_header(headers, first_checkbox=True, hide_row_id=True) -%}
+
+    <thead>
+        <tr>
+            {% if first_checkbox == True %}
+            <th><input class="form-check-input" type="checkbox" name="select_all"></th>
+            {% endif %}
+            {% for header in headers %}
+                {% if header == "id" and  hide_row_id == True %}
+                    {% continue %}
+                {% endif %}
+                <th class="th-sm">{{ header }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+
+{%- endmacro %}
+
+{% macro render_table_body(rows, body_id='comments_body', first_checkbox=True, hide_row_id=True) -%}
+
+    <tbody id="{{ body_id }}">
+        {% set cycle_list = cycler('success', 'table-light') %}
+        {% for row in rows %}
+            <tr class="{{ cycle_list.next() }} ">
+                {% if first_checkbox == True %}
+                    <td><input class="form-check-input" type="checkbox" id="{{ row['id'] }}"></td>
+                {% endif %}
+                {% for key, value in row.items() %}
+                    {% if key == "id" and  hide_row_id == True %}
+                        {% continue %}
+                    {% endif %}
+                    <td>{{ value }}</td>
+                {%  endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+
+{%- endmacro %}

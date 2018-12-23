@@ -1,0 +1,38 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" media="screen" href="static/css/bootstrap.min.css">
+<link rel="stylesheet" href="static/css/bootstrap-theme.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+{% import 'macros.html' as macros %}
+{% block content %}
+
+    <script type="text/javascript">
+    $(document).ready(function (){
+        $("select#region option:first-child").attr("disabled", "true");
+        $("select#city option:first-child").attr("disabled", "true");
+        $("#region").change(function (){
+            $.ajax({
+                type: "GET",
+                url: "{{ url_for('regions') }}",
+                data: {region: $(this).val()},
+                dataType: 'json',
+                success: function (response) {
+                    $("select#city").children('option:not(:first)').remove();
+                    $.each(response.regions[0].cities,function(i,data){
+                        var option="<option value="+data.city_name+">"+data.city_name+"</option>";
+                        $(option).appendTo('#city');
+                    });
+                }
+            });
+        });
+    });
+    </script>
+
+    <div class="container">
+        <h2>Comments on Flask!!!</h2>
+        {{ macros.render_alert('alert-success') }}
+        {{ macros.render_alert('alert-danger') }}
+        {{ macros.render_form(form, action_url=url_for('comments'), action_text='Create', class_='form-group') }}
+    </div>
+
+{% endblock content %}
