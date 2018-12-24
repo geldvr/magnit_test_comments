@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 
 MODE="test"
+static_folder='./app/static/'
+
+echo "Download Bootstrap!!!"
+bootstrap_package="https://github.com/twbs/bootstrap/releases/download/v3.3.7/bootstrap-3.3.7-dist.zip"
+wget ${bootstrap_package} || exit
+
+unzip `basename ${bootstrap_package}` -d ./app/static/
+mv ${static_folder}/bootstrap*/* ${static_folder}
+rm -rf ${static_folder}/bootstrap*
 
 CONFIG_NOT_FOUND=2
 INVALID_ARG=1

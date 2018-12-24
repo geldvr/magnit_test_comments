@@ -6,3 +6,4 @@ __pycache__
 
 # Don't track files
 *.log
+*.zip
